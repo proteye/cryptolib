@@ -2,13 +2,15 @@ package main
 
 import (
 	"bytes"
-	cryptolib "cryptolib/lib"
+	"cryptolib/lib/aes"
+	"cryptolib/lib/rsa"
 	"fmt"
 )
 
 func main() {
-	params := cryptolib.KeyParams{}
-	keyPair, err := cryptolib.GenerateKeyPair(&params)
+	// RSA
+	params := rsa.KeyParams{}
+	keyPair, err := rsa.GenerateKeyPair(&params)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -21,14 +23,14 @@ func main() {
 	message := []byte("Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello!!!")
 	fmt.Println("\nText len =", len(message)*8)
 
-	cipher, err := cryptolib.Encrypt(message, keyPair.PublicKey)
+	cipher, err := rsa.Encrypt(message, keyPair.PublicKey)
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
 		fmt.Println("\ncipher =", cipher)
 	}
 
-	plaintext, err := cryptolib.Decrypt(cipher, keyPair.PrivateKey)
+	plaintext, err := rsa.Decrypt(cipher, keyPair.PrivateKey)
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
@@ -38,10 +40,20 @@ func main() {
 	message = []byte("Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! Hello, World! OK!!")
 	fmt.Println("\nText len =", len(message)*8)
 
-	cipher, _ = cryptolib.Encrypt(message, keyPair.PublicKey)
-	fmt.Println("\ncipher =", cipher)
+	cipher, _ = rsa.Encrypt(message, keyPair.PublicKey)
+	fmt.Println("\nRSA cipher =", cipher)
 
-	plaintext, _ = cryptolib.Decrypt(cipher, keyPair.PrivateKey)
-	fmt.Println("\nplaintext =", string(plaintext))
+	plaintext, _ = rsa.Decrypt(cipher, keyPair.PrivateKey)
+	fmt.Println("\nRSA plaintext =", string(plaintext))
+	fmt.Println("\nIs messages equal?", bytes.Equal(message, plaintext))
+
+	// AES
+	password := "password!"
+	salt := []byte("salt!")
+	cipher, _ = aes.Encrypt(message, password, salt)
+	fmt.Println("\nAES cipher =", cipher)
+
+	plaintext, _ = aes.Decrypt(cipher, password, salt)
+	fmt.Println("\nAES plaintext =", string(plaintext))
 	fmt.Println("\nIs messages equal?", bytes.Equal(message, plaintext))
 }
