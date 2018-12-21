@@ -1,4 +1,4 @@
-package cryptolib
+package rsa
 
 import (
 	"errors"
@@ -7,12 +7,12 @@ import (
 
 func Encrypt(plaintext []byte, publicKey *PublicKey) ([]byte, error) {
 	if len(plaintext) == 0 {
-		return nil, errors.New("rsalib: encryption error - message length should not be 0")
+		return nil, errors.New("cryptolib/rsa: encryption error - message length should not be 0")
 	}
 
 	m := new(big.Int).SetBytes(plaintext)
 	if m.Cmp(publicKey.N) > 0 {
-		return nil, errors.New("rsalib: encryption error - message length is greater than bits")
+		return nil, errors.New("cryptolib/rsa: encryption error - message length is greater than bits")
 	}
 
 	e := big.NewInt(int64(publicKey.E))
@@ -23,12 +23,12 @@ func Encrypt(plaintext []byte, publicKey *PublicKey) ([]byte, error) {
 
 func Decrypt(cipher []byte, privateKey *PrivateKey) ([]byte, error) {
 	if len(cipher) == 0 {
-		return nil, errors.New("rsalib: decryption error - cipher length should not be 0")
+		return nil, errors.New("cryptolib/rsa: decryption error - cipher length should not be 0")
 	}
 
 	c := new(big.Int).SetBytes(cipher)
 	if c.Cmp(privateKey.N) > 0 {
-		return nil, errors.New("rsalib: decryption error - cipher length is greater than bits")
+		return nil, errors.New("cryptolib/rsa: decryption error - cipher length is greater than bits")
 	}
 
 	m := new(big.Int)

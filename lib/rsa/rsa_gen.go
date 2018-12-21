@@ -1,4 +1,4 @@
-package cryptolib
+package rsa
 
 import (
 	"crypto/rand"
@@ -87,7 +87,7 @@ func GenerateKeyPair(params *KeyParams) (keyPair *KeyPair, err error) {
 
 func generatePrivateKey(bits int, exp int) (privateKey *PrivateKey, err error) {
 	if bits < 64 {
-		return nil, errors.New("rsalib: too few bits to generate an RSA key")
+		return nil, errors.New("cryptolib/rsa: too few bits to generate an RSA key")
 	}
 	err = checkPublicExp(exp)
 	if err != nil {
@@ -163,10 +163,10 @@ func generatePrivateKey(bits int, exp int) (privateKey *PrivateKey, err error) {
 
 func checkPublicExp(exp int) error {
 	if exp < 2 {
-		return errors.New("rsalib: public exponent too small")
+		return errors.New("cryptolib/rsa: public exponent too small")
 	}
 	if exp > 1<<31-1 {
-		return errors.New("rsalib: public exponent too large")
+		return errors.New("cryptolib/rsa: public exponent too large")
 	}
 
 	ok := false
@@ -176,7 +176,7 @@ func checkPublicExp(exp int) error {
 		}
 	}
 	if ok != true {
-		return errors.New("rsalib: public exponent is not be in range of Ferma numbers 3, 5, 17, 257, 65537")
+		return errors.New("cryptolib/rsa: public exponent is not be in range of Ferma numbers 3, 5, 17, 257, 65537")
 	}
 
 	return nil
@@ -184,13 +184,13 @@ func checkPublicExp(exp int) error {
 
 func checkPublicKey(pubKey *PublicKey) error {
 	if pubKey.N == nil {
-		return errors.New("rsalib: missing public modulus")
+		return errors.New("cryptolib/rsa: missing public modulus")
 	}
 	if pubKey.E < 2 {
-		return errors.New("rsalib: public exponent too small")
+		return errors.New("cryptolib/rsa: public exponent too small")
 	}
 	if pubKey.E > 1<<31-1 {
-		return errors.New("rsalib: public exponent too large")
+		return errors.New("cryptolib/rsa: public exponent too large")
 	}
 
 	return nil
